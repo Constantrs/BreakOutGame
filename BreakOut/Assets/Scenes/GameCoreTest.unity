@@ -526,15 +526,18 @@ MonoBehaviour:
   - {fileID: 2498952437401687646, guid: c9774b0883b1f294887398c27c9f5988, type: 3}
   - {fileID: 4695378180552276835, guid: aaa65ccc0ed89194b990686fd0d9f5f9, type: 3}
   - {fileID: 7625288938010075288, guid: ef2f9b68bf41409449b6e4044db9857e, type: 3}
-  _playerPrefab: {fileID: 7130621813624242420, guid: 2a78c3359ca267841982806b76ea54ce, type: 3}
+  _paddlePrefab: {fileID: 7130621813624242420, guid: 2a78c3359ca267841982806b76ea54ce, type: 3}
+  _ballPrefab: {fileID: 8303361585696007555, guid: 1ffda4419239d39488b9548110ce4b78, type: 3}
   _startLevel: 0
   _blockBasePos: {x: -9, y: 4, z: 0}
   _playerDefaultPos: {x: 0, y: -4, z: 0}
+  _ballDefaultOffset: {x: 0, y: 0.4, z: 0}
   _blockRoot: {fileID: 425422750}
   _playerRoot: {fileID: 829101619}
   _state: 0
   _currentLevel: 0
   _targetCount: 0
+  _score: 0
 --- !u!1 &1191659513
 GameObject:
   m_ObjectHideFlags: 0

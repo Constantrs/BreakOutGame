@@ -4,6 +4,7 @@ using UnityEngine;
 
 using BreakoutProject.Utility;
 using BreakoutProject.Controller;
+using System;
 
 namespace BreakoutProject
 {
@@ -27,12 +28,14 @@ namespace BreakoutProject
 
             [SerializeField] private List<string> _levelList = new List<string>();
             [SerializeField] private List<GameObject> _blcokPrefabList = new List<GameObject>();
-            [SerializeField] private GameObject _playerPrefab;
+            [SerializeField] private GameObject _paddlePrefab;
+            [SerializeField] private GameObject _ballPrefab;
 
             // 調整パラメータ
             [SerializeField] private int _startLevel = 0;
             [SerializeField] private Vector3 _blockBasePos;
             [SerializeField] private Vector3 _playerDefaultPos;
+            [SerializeField] private Vector3 _ballDefaultOffset;
 
             // Rootゲームオブジェク
             [SerializeField] private GameObject _blockRoot;
@@ -41,6 +44,7 @@ namespace BreakoutProject
             [SerializeField, ReadOnlyAttribute] private GameState _state = GameState.NONE;
             [SerializeField, ReadOnlyAttribute] private int _currentLevel = 0;
             [SerializeField, ReadOnlyAttribute] private int _targetCount = 0;
+            [SerializeField, ReadOnlyAttribute] private int _score = 0;
 
             private MasterManager _masterManager;
             private PlayerController _playerController;
@@ -93,16 +97,28 @@ namespace BreakoutProject
             // プレイヤー初期化
             private void InitPlayer()
             {
-                if (_playerPrefab != null && _playerRoot != null)
+                if (_paddlePrefab != null && _ballPrefab != null && _playerRoot != null)
                 {
-                    GameObject playerpaddle = Instantiate(_playerPrefab, _playerDefaultPos, Quaternion.identity, _playerRoot.transform);
+                    Vector3 ballPos = _playerDefaultPos + _ballDefaultOffset;
+                    GameObject playerpaddle = Instantiate(_paddlePrefab, _playerDefaultPos, Quaternion.identity, _playerRoot.transform);
+                    GameObject playerball = Instantiate(_ballPrefab, ballPos, Quaternion.identity, _playerRoot.transform);
+
+                    if (playerball != null)
+                    {
+                        playerball.tag = _playerRoot.tag;
+                        if (playerball.GetComponent<BallController>() != null)
+                        {
+                            playerball.GetComponent<BallController>().SetOffset(_ballDefaultOffset);
+                        }
+                    }
+
                     if (playerpaddle != null)
                     {
                         playerpaddle.tag = _playerRoot.tag;
                         _playerController = playerpaddle.GetComponent<PlayerController>();
                         if(_playerController != null)
                         {
-                            _playerController.InitPlayerController(this);
+                            _playerController.InitPlayerController(this, playerball);
                         }
                     }
                 }
@@ -128,11 +144,17 @@ namespace BreakoutProject
                 return 0.0f;
             }
 
+            // プレイヤー初期化
+            public void DestroyBlock(int score)
+            {
+                _score += score;
+                _targetCount--;
+            }
+
             public GameState GetGameState()
             {
                 return _state;
             }
-
 
             IEnumerator coInitLevel(string csvfileStr)
             {
@@ -170,6 +192,11 @@ namespace BreakoutProject
                                 if (block != null) 
                                 {
                                     block.tag = _blockRoot.tag;
+                                    BlockController blockController = block.GetComponent<BlockController>();
+                                    if (blockController != null)
+                                    {
+                                        blockController.InitBlockController(this);
+                                    }
                                 }
 
                                 _targetCount++;

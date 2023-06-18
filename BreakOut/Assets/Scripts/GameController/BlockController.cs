@@ -2,17 +2,48 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BlockController : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+using BreakoutProject.Utility;
+using BreakoutProject.Manager;
 
-    // Update is called once per frame
-    void Update()
+namespace BreakoutProject
+{
+    namespace Controller
     {
-        
+        /// <Summary>
+        /// ブロックコントローラー
+        /// </Summary>
+        public class BlockController : MonoBehaviour
+        {
+
+            [SerializeField, ReadOnlyAttribute] private bool _destroyed = false;
+
+            private GameCoreManager _coreManager;
+
+            private void Hit()
+            {
+                if (_coreManager != null)
+                {
+                    _coreManager.DestroyBlock(100);
+                }
+                gameObject.SetActive(false);
+                _destroyed = true;
+            }
+
+            private void OnCollisionEnter2D(Collision2D collision)
+            {
+                if(_destroyed)
+                {
+                    return;
+                }
+
+                Hit();
+            }
+
+
+            public void InitBlockController(GameCoreManager coreManager)
+            {
+                _coreManager = coreManager;
+            }
+        }
     }
 }

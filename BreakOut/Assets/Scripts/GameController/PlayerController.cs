@@ -4,13 +4,14 @@ using UnityEngine;
 
 using BreakoutProject.Utility;
 using BreakoutProject.Manager;
-using UnityEngine.SceneManagement;
-using UnityEngine.Playables;
 
 namespace BreakoutProject
 {
     namespace Controller
     {
+        /// <Summary>
+        /// プレイヤーコントローラー
+        /// </Summary>
         public class PlayerController : MonoBehaviour
         {
             [SerializeField] private float _movedForce = 30.0f;
@@ -19,6 +20,7 @@ namespace BreakoutProject
             [SerializeField, ReadOnlyAttribute] private Vector2 _velocity;
 
             private Rigidbody2D _rigidbody2D;
+            private BallController _ballController;
             private GameCoreManager _coreManager;
 
             // Start is called before the first frame update
@@ -48,17 +50,32 @@ namespace BreakoutProject
                     _direction = Vector2.zero;
                 }
 
+                if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0))
+                {
+                    Vector2 balldirection = new Vector2(_direction.x, 1.0f).normalized;
+                    _ballController.BootBall(balldirection);
+                }
+
                 _velocity = _direction * _movedForce * _coreManager.GetSceneDeltaTimeScale();
             }
 
             private void FixedUpdate()
             {
                 _rigidbody2D.AddForce(_velocity);
+
+                if (_ballController != null)
+                {
+                    if (_ballController.isWaiting())
+                    {
+                        _ballController.TrackingObject(transform.position);
+                    }
+                }
             }
 
-            public void InitPlayerController(GameCoreManager coreManager)
+            public void InitPlayerController(GameCoreManager coreManager, GameObject ball)
             {
                 _coreManager = coreManager;
+                _ballController = ball.GetComponent<BallController>();
             }
         }
     }
