@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using BreakoutProject.Utility;
+using BreakoutProject.Controller;
 
 namespace BreakoutProject
 {
@@ -94,10 +95,15 @@ namespace BreakoutProject
             {
                 if (_playerPrefab != null && _playerRoot != null)
                 {
-                    GameObject player = Instantiate(_playerPrefab, _playerDefaultPos, Quaternion.identity, _playerRoot.transform);
-                    if (player != null)
+                    GameObject playerpaddle = Instantiate(_playerPrefab, _playerDefaultPos, Quaternion.identity, _playerRoot.transform);
+                    if (playerpaddle != null)
                     {
-                        _playerController = player.GetComponent<PlayerController>();
+                        playerpaddle.tag = _playerRoot.tag;
+                        _playerController = playerpaddle.GetComponent<PlayerController>();
+                        if(_playerController != null)
+                        {
+                            _playerController.InitPlayerController(this);
+                        }
                     }
                 }
             }
@@ -145,20 +151,27 @@ namespace BreakoutProject
 
                         for (int i = 0; i < info.Length; i++)
                         {
-                            int brickIndex = int.Parse(info[i]);
-                            // ‰Šú‰»
-                            if (brickIndex > 0 && brickIndex <= _blcokPrefabList.Count)
+                            int blockIndex = int.Parse(info[i]);
+                            // ƒuƒƒbƒN‰Šú‰»
+                            if (blockIndex > 0 && blockIndex <= _blcokPrefabList.Count)
                             {
-                                int prefabIndex = brickIndex - 1;
+                                GameObject block = null;
+                                int prefabIndex = blockIndex - 1;
                                 Vector3 brickPos = new Vector3(_blockBasePos.x + i * 2.0f, _blockBasePos.y - (row * 0.5f), _blockBasePos.z);
                                 if (_blockRoot != null)
                                 {
-                                    Instantiate(_blcokPrefabList[prefabIndex], brickPos, Quaternion.identity, _blockRoot.transform);
+                                    block = Instantiate(_blcokPrefabList[prefabIndex], brickPos, Quaternion.identity, _blockRoot.transform);
                                 }
                                 else
                                 {
-                                    Instantiate(_blcokPrefabList[prefabIndex], brickPos, Quaternion.identity);
+                                    block = Instantiate(_blcokPrefabList[prefabIndex], brickPos, Quaternion.identity);
                                 }
+
+                                if (block != null) 
+                                {
+                                    block.tag = _blockRoot.tag;
+                                }
+
                                 _targetCount++;
                             }
                         }
