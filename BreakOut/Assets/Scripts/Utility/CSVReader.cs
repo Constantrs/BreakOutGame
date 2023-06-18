@@ -30,7 +30,8 @@ namespace BreakoutProject
                 {
                     // ˆês‚¸‚Â“Ç‚İ‚İ
                     string line = reader.ReadLine();
-                    if (count != 0)
+                    // 0 - 1s’Ç‰Á‚µ‚È‚¢
+                    if (count > 1)
                     {
                         datas.Add(line);
                         Debug.Log(line);

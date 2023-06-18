@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using BreakoutProject.Utility;
-using static BreakoutProject.Game.MasterManager;
+using static BreakoutProject.Manager.MasterManager;
 
 namespace BreakoutProject
 {
-    namespace Game
+    namespace Manager
     {
         /// <Summary>
         /// マスターマネージャー(削除しない)
